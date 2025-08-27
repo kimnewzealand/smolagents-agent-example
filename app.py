@@ -1,37 +1,52 @@
-from smolagents import CodeAgent,DuckDuckGoSearchTool, HfApiModel,load_tool,tool
-import datetime
-import requests
-import pytz
+from smolagents import CodeAgent, HfApiModel,tool
+
 import yaml
 from tools.final_answer import FinalAnswerTool
 
 from Gradio_UI import GradioUI
 
-# Below is an example of a tool that does nothing. Amaze us with your creativity !
 @tool
-def my_custom_tool(arg1:str, arg2:int)-> str: #it's import to specify the return type
-    #Keep this format for the description / args / args description but feel free to modify the tool
-    """A tool that does nothing yet 
-    Args:
-        arg1: the first argument
-        arg2: the second argument
+def get_compliance_calendar() -> str:
     """
-    return "What magic will you build ?"
+    Get key compliance calendar dates and deadlines for New Zealand startups.
 
-@tool
-def get_current_time_in_timezone(timezone: str) -> str:
-    """A tool that fetches the current local time in a specified timezone.
-    Args:
-        timezone: A string representing a valid timezone (e.g., 'America/New_York').
+    Returns:
+        String with important compliance deadlines and requirements
     """
-    try:
-        # Create timezone object
-        tz = pytz.timezone(timezone)
-        # Get current time in that timezone
-        local_time = datetime.datetime.now(tz).strftime("%Y-%m-%d %H:%M:%S")
-        return f"The current local time in {timezone} is: {local_time}"
-    except Exception as e:
-        return f"Error fetching time for timezone '{timezone}': {str(e)}"
+    calendar_info = """
+📅 NEW ZEALAND STARTUP COMPLIANCE CALENDAR:
+
+ANNUAL REQUIREMENTS:
+• Annual Return: Due by anniversary of incorporation date
+• Income Tax Return: Due 7 April (or extension date if applicable)
+• Financial Statements: Must be completed within 5 months of balance date
+
+ONGOING REQUIREMENTS (if applicable):
+• GST Returns:
+  - Monthly (if turnover >$24M)
+  - 2-monthly (if turnover $500K-$24M)
+  - 6-monthly (if turnover <$500K)
+• PAYE Returns: Monthly (if employing staff)
+• Provisional Tax: Payments due 28 Aug, 15 Jan, 7 May
+
+EMPLOYMENT COMPLIANCE (if hiring):
+• Employment agreements within first day of work
+• Holiday and leave entitlements
+• Health and safety requirements
+• Minimum wage compliance
+
+KEY THRESHOLDS:
+• GST Registration: Required if turnover >$60,000
+• PAYE: Required when paying employees/contractors >$200
+• Company Registration: Required before starting business operations
+
+IMPORTANT DATES 2024/2025:
+• 28 August 2024: Provisional tax payment due
+• 15 January 2025: Provisional tax payment due
+• 7 April 2025: Income tax returns due
+• 7 May 2025: Provisional tax payment due
+"""
+    return calendar_info
 
 
 final_answer = FinalAnswerTool()
@@ -47,15 +62,12 @@ custom_role_conversions=None,
 )
 
 
-# Import tool from Hub
-image_generation_tool = load_tool("agents-course/text-to-image", trust_remote_code=True)
-
 with open("prompts.yaml", 'r') as stream:
     prompt_templates = yaml.safe_load(stream)
     
 agent = CodeAgent(
     model=model,
-    tools=[final_answer], ## add your tools here (don't remove final answer)
+    tools=[get_compliance_calendar,final_answer], ## add your tools here (don't remove final answer)
     max_steps=6,
     verbosity_level=1,
     grammar=None,
