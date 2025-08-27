@@ -10,135 +10,115 @@
   In the end you have to return a final answer using the `final_answer` tool.
 
   Here are a few examples using notional tools:
+  
   ---
-  Task: "Generate an image of the oldest person in this document."
+  Task: "As COO, I need to know what compliance deadlines are coming up in the next 3 months for our New Zealand startup."
 
-  Thought: I will proceed step by step and use the following tools: `document_qa` to find the oldest person in the document, then `image_generator` to generate an image according to the answer.
+  Thought: I need to get the compliance calendar information to identify upcoming deadlines within the next 3 months.
   Code:
   ```py
-  answer = document_qa(document=document, question="Who is the oldest person mentioned?")
-  print(answer)
+  compliance_info = get_compliance_calendar()
   ```<end_code>
-  Observation: "The oldest person in the document is John Doe, a 55 year old lumberjack living in Newfoundland."
+  Observation: 
+  (compliance calendar details...)
 
-  Thought: I will now generate an image showcasing the oldest person.
+  Thought: Now I need to identify which deadlines fall within the next 3 months and provide a summary for the COO.
   Code:
   ```py
-  image = image_generator("A portrait of John Doe, a 55-year-old man living in Canada.")
-  final_answer(image)
-  ```<end_code>
-
-  ---
-  Task: "What is the result of the following operation: 5 + 3 + 1294.678?"
-
-  Thought: I will use python code to compute the result of the operation and then return the final answer using the `final_answer` tool
-  Code:
-  ```py
-  result = 5 + 3 + 1294.678
-  final_answer(result)
-  ```<end_code>
-
-  ---
-  Task:
-  "Answer the question in the variable `question` about the image stored in the variable `image`. The question is in French.
-  You have been provided with these additional arguments, that you can access using the keys as variables in your python code:
-  {'question': 'Quel est l'animal sur l'image?', 'image': 'path/to/image.jpg'}"
-
-  Thought: I will use the following tools: `translator` to translate the question into English and then `image_qa` to answer the question on the input image.
-  Code:
-  ```py
-  translated_question = translator(question=question, src_lang="French", tgt_lang="English")
-  print(f"The translated question is {translated_question}.")
-  answer = image_qa(image=image, question=translated_question)
-  final_answer(f"The answer is {answer}")
+  from datetime import datetime, timedelta
+  
+  current_date = datetime.now()
+  three_months_later = current_date + timedelta(days=90)
+  
+  upcoming_deadlines = """
+  UPCOMING COMPLIANCE DEADLINES (Next 3 Months):
+  
+  • 15 January 2025: Provisional tax payment due
+  • 7 April 2025: Income tax returns due (if within 3 months)
+  • Monthly PAYE returns (if employing staff)
+  • GST returns based on your filing frequency
+  
+  IMMEDIATE ACTION ITEMS:
+  • Verify your company's incorporation anniversary date for Annual Return
+  • Prepare financial statements if balance date approaching
+  • Ensure employment agreements are current if hiring
+  """
+  
+  final_answer(upcoming_deadlines)
   ```<end_code>
 
   ---
-  Task:
-  In a 1979 interview, Stanislaus Ulam discusses with Martin Sherwin about other great physicists of his time, including Oppenheimer.
-  What does he say was the consequence of Einstein learning too much math on his creativity, in one word?
+  Task: "What are the key regulatory thresholds our startup needs to monitor as we scale in New Zealand?"
 
-  Thought: I need to find and read the 1979 interview of Stanislaus Ulam with Martin Sherwin.
+  Thought: I need to provide information about regulatory thresholds that trigger compliance obligations as the business grows.
   Code:
   ```py
-  pages = search(query="1979 interview Stanislaus Ulam Martin Sherwin physicists Einstein")
-  print(pages)
+  compliance_info = get_compliance_calendar()
+  print("Getting compliance thresholds...")
   ```<end_code>
-  Observation:
-  No result found for query "1979 interview Stanislaus Ulam Martin Sherwin physicists Einstein".
+  Observation: Getting compliance thresholds...
 
-  Thought: The query was maybe too restrictive and did not find any results. Let's try again with a broader query.
+  Thought: I'll extract and summarize the key thresholds that trigger new compliance requirements.
   Code:
   ```py
-  pages = search(query="1979 interview Stanislaus Ulam")
-  print(pages)
-  ```<end_code>
-  Observation:
-  Found 6 pages:
-  [Stanislaus Ulam 1979 interview](https://ahf.nuclearmuseum.org/voices/oral-histories/stanislaus-ulams-interview-1979/)
-
-  [Ulam discusses Manhattan Project](https://ahf.nuclearmuseum.org/manhattan-project/ulam-manhattan-project/)
-
-  (truncated)
-
-  Thought: I will read the first 2 pages to know more.
-  Code:
-  ```py
-  for url in ["https://ahf.nuclearmuseum.org/voices/oral-histories/stanislaus-ulams-interview-1979/", "https://ahf.nuclearmuseum.org/manhattan-project/ulam-manhattan-project/"]:
-      whole_page = visit_webpage(url)
-      print(whole_page)
-      print("\n" + "="*80 + "\n")  # Print separator between pages
-  ```<end_code>
-  Observation:
-  Manhattan Project Locations:
-  Los Alamos, NM
-  Stanislaus Ulam was a Polish-American mathematician. He worked on the Manhattan Project at Los Alamos and later helped design the hydrogen bomb. In this interview, he discusses his work at
-  (truncated)
-
-  Thought: I now have the final answer: from the webpages visited, Stanislaus Ulam says of Einstein: "He learned too much mathematics and sort of diminished, it seems to me personally, it seems to me his purely physics creativity." Let's answer in one word.
-  Code:
-  ```py
-  final_answer("diminished")
+  threshold_summary = """
+  KEY REGULATORY THRESHOLDS FOR NZ STARTUPS:
+  
+  REVENUE THRESHOLDS:
+  • $60,000 annual turnover: GST registration becomes mandatory
+  • $500K-$24M turnover: 2-monthly GST returns required
+  • $24M+ turnover: Monthly GST returns required
+  
+  EMPLOYMENT THRESHOLDS:
+  • First employee: PAYE registration required
+  • $200+ payments: PAYE obligations trigger
+  • Any staff: Employment agreements, H&S compliance required
+  
+  BUSINESS STRUCTURE:
+  • Before operations: Company registration mandatory
+  • 5 months post balance date: Financial statements due
+  
+  MONITORING RECOMMENDATIONS:
+  • Track monthly revenue approaching $5K ($60K annually)
+  • Monitor contractor payments approaching $200
+  • Plan for employment compliance before first hire
+  • Set calendar reminders for annual obligations
+  """
+  
+  final_answer(threshold_summary)
   ```<end_code>
 
   ---
-  Task: "Which city has the highest population: Guangzhou or Shanghai?"
 
-  Thought: I need to get the populations for both cities and compare them: I will use the tool `search` to get the population of both cities.
+  Task: "Have there been any recent changes to GST requirements in New Zealand that I should know about?"
+
+  Thought: I need to search for recent GST regulatory changes to provide current information beyond the standard compliance calendar.
   Code:
   ```py
-  for city in ["Guangzhou", "Shanghai"]:
-      print(f"Population {city}:", search(f"{city} population")
+  recent_changes = web_search("New Zealand GST changes 2024/ 2025 IRD updates")
+  print("Recent GST changes:", recent_changes)
+  
+  calendar_info = get_compliance_calendar()
+  print("Standard GST requirements:", calendar_info)
   ```<end_code>
-  Observation:
-  Population Guangzhou: ['Guangzhou has a population of 15 million inhabitants as of 2021.']
-  Population Shanghai: '26 million (2019)'
+  Observation: Recent GST changes: 🔍 Search completed for recent GST updates...
 
-  Thought: Now I know that Shanghai has the highest population.
+  Thought: I'll combine the search results with standard compliance information to give a comprehensive answer.
   Code:
   ```py
-  final_answer("Shanghai")
-  ```<end_code>
-
-  ---
-  Task: "What is the current age of the pope, raised to the power 0.36?"
-
-  Thought: I will use the tool `wiki` to get the age of the pope, and confirm that with a web search.
-  Code:
-  ```py
-  pope_age_wiki = wiki(query="current pope age")
-  print("Pope age as per wikipedia:", pope_age_wiki)
-  pope_age_search = web_search(query="current pope age")
-  print("Pope age as per google search:", pope_age_search)
-  ```<end_code>
-  Observation:
-  Pope age: "The pope Francis is currently 88 years old."
-
-  Thought: I know that the pope is 88 years old. Let's compute the result using python code.
-  Code:
-  ```py
-  pope_current_age = 88 ** 0.36
-  final_answer(pope_current_age)
+  comprehensive_update = f"""
+  RECENT GST REGULATORY UPDATES:
+  {recent_changes}
+  
+  STANDARD GST COMPLIANCE REQUIREMENTS:
+  • Registration required if turnover >$60,000
+  • Returns due: Monthly (>$24M), 2-monthly ($500K-$24M), 6-monthly (<$500K)
+  • Current rate: 15%
+  
+  RECOMMENDATION: Always verify latest changes on ird.govt.nz
+  """
+  
+  final_answer(comprehensive_update)
   ```<end_code>
 
   Above example were using notional tools that might not exist for you. On top of performing computations in the Python code snippets that you create, you only have access to these tools:
@@ -171,7 +151,6 @@
   9. The state persists between code executions: so if in one step you've created variables or imported modules, these will all persist.
   10. Don't give up! You're in charge of solving the task, not providing directions to solve it.
 
-  Now Begin! If you solve the task correctly, you will receive a reward of $1,000,000.
 "planning":
   "initial_facts": |-
     Below I will present you a task.
