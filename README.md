@@ -26,10 +26,11 @@ It currently has the following features:
 - ✅ Multi-tool orchestration with [smolagents](https://huggingface.co/docs/smolagents/en/index)
 [CodeAgent](https://huggingface.co/docs/smolagents/v1.21.1/en/reference/agents#smolagents.CodeAgent)s are the primary type of agent in smolagents. Instead of generating JSON or text, these agents produce Python code to perform actions.
 
-- 2 Custom Tools
-    NZ specific web search capability via `ComplianceWebSearchTool`
+- 1 Custom Tools
     Structured compliance calendar data via `Get_Compliance_Calendar_Tool`
-    - smolagents tool - Final answer tool via `FinalAnswerTool`
+- 2 smolagents tools
+    Final answer tool via `FinalAnswerTool`
+    Web search tool via `DuckDuckGoSearchTool`
 - ✅ Evaluation script with scoring metrics
 
 

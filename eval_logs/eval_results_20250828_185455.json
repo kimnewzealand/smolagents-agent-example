@@ -1,0 +1,61 @@
+{
+  "evaluation_metadata": {
+    "timestamp": "2025-08-28T18:54:55.742985",
+    "agent_name": "NZ_Compliance_Agent",
+    "evaluation_version": "1.0"
+  },
+  "summary_metrics": {
+    "total_tests": 2,
+    "successful_tests": 2,
+    "success_rate": 1.0,
+    "average_quality_score": 2.0,
+    "average_execution_time": 17.495230078697205,
+    "max_quality_score": 5
+  },
+  "category_breakdown": {
+    "gst": {
+      "count": 1,
+      "total_quality": 2,
+      "total_time": 18.977754831314087,
+      "avg_quality": 2.0,
+      "avg_time": 18.977754831314087
+    },
+    "deadlines": {
+      "count": 1,
+      "total_quality": 2,
+      "total_time": 16.012705326080322,
+      "avg_quality": 2.0,
+      "avg_time": 16.012705326080322
+    }
+  },
+  "detailed_results": [
+    {
+      "test_id": "gst_requirements",
+      "category": "gst",
+      "query": "What are the GST requirements for my startup in New Zealand?",
+      "response": "\nKey GST (Goods and Services Tax) requirements for New Zealand startups:\n\n1. Registration Requirements:\n   \u2022 Mandatory registration when turnover exceeds or is expected to exceed NZD 60,000 in any 12-month period\n   \u2022 Voluntary registration possible even if below the threshold\n   \u2022 Current GST rate is 15%\n\n2. Filing Frequency:\n   \u2022 6-monthly returns for businesses with turnover under $500,000\n   \u2022 Due dates: February 5 and September 5\n\n3. Important Notes:\n   \u2022 Must register as soon as you expect to exceed the $60,000 threshold\n   \u2022 Penalties may apply for late registration\n   \u2022 Non-resident businesses providing taxable supplies in NZ must also register if they exceed the threshold\n\n4. Compliance:\n   \u2022 Need to keep track of all GST collected from customers\n   \u2022 Must maintain records of GST paid on business expenses\n   \u2022 Required to file returns and pay GST by due dates\n",
+      "response_length": 881,
+      "execution_time": 18.977754831314087,
+      "expected_tools": [
+        "get_compliance_calendar"
+      ],
+      "quality_score": 2,
+      "max_quality_score": 5,
+      "timestamp": "2025-08-28T18:54:39.728451"
+    },
+    {
+      "test_id": "upcoming_deadlines",
+      "category": "deadlines",
+      "query": "What compliance deadlines are coming up in the next 3 months?",
+      "response": "Upcoming compliance deadlines in the next 3 months:\nGST Return due on 05 September 2025\nPAYE Return due on 20 September 2025\nPAYE Return due on 20 October 2025\nPAYE Return due on 20 November 2025",
+      "response_length": 195,
+      "execution_time": 16.012705326080322,
+      "expected_tools": [
+        "get_compliance_calendar"
+      ],
+      "quality_score": 2,
+      "max_quality_score": 5,
+      "timestamp": "2025-08-28T18:54:55.741908"
+    }
+  ]
+}

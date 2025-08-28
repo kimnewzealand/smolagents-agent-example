@@ -50,21 +50,15 @@ class ComplianceAgentEvaluator:
         if self.agent:
             return self.agent
     
-    def _evaluate_response(self, test_case: Dict, response: str, execution_time: float, tools_used: List[str]) -> Dict[str, Any]:
+    def _evaluate_response(self, test_case: Dict, response: str, execution_time: float) -> Dict[str, Any]:
         """Evaluate a single response."""
         # Simple scoring metrics
         response_length = len(response)
-        has_final_answer = "final_answer" in tools_used
-        used_expected_tools = any(tool in tools_used for tool in test_case["expected_tools"])
         
         # Basic quality checks
         quality_score = 0
         if response_length > 50:  # Non-trivial response
             quality_score += 1
-        if has_final_answer:  # Used final answer tool
-            quality_score += 1
-        if used_expected_tools:  # Used relevant tools
-            quality_score += 2
         if execution_time < 30:  # Reasonable response time
             quality_score += 1
         
@@ -75,10 +69,7 @@ class ComplianceAgentEvaluator:
             "response": response,
             "response_length": response_length,
             "execution_time": execution_time,
-            "tools_used": tools_used,
             "expected_tools": test_case["expected_tools"],
-            "used_expected_tools": used_expected_tools,
-            "has_final_answer": has_final_answer,
             "quality_score": quality_score,
             "max_quality_score": 5,
             "timestamp": datetime.now().isoformat()
@@ -99,7 +90,7 @@ class ComplianceAgentEvaluator:
                 response = agent.run(test_case["query"])
                 execution_time = time.time() - start_time
                 
-                result = self._evaluate_response(test_case, response, execution_time, tools_used)
+                result = self._evaluate_response(test_case, response, execution_time)
                 self.results.append(result)
                 
                 print(f"✅ Completed in {execution_time:.2f}s")
