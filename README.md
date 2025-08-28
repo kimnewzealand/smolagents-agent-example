@@ -19,6 +19,15 @@ Check out the configuration reference at https://huggingface.co/docs/hub/spaces-
 
 This repo follows https://huggingface.co/learn/agents-course/en/unit1/tutorial
 
+The purpose of this repo is to build a compliance agent for New Zealand startups.
+
+It currently has the following features:
+
+- ✅ Web search capability via `ComplianceWebSearchTool`
+- ✅ Structured compliance calendar data via `Get_Compliance_Calendar_Tool`
+- ✅ Multi-tool orchestration with smolagents
+CodeAgents are the primary type of agent in smolagents. Instead of generating JSON or text, these agents produce Python code to perform actions.
+- ✅ Focused on NZ regulatory landscape
 
 ## Setup
 
@@ -69,13 +78,19 @@ Follow these steps to set up the environment:
     
     **Note**: Never commit your `.env` file to version control. It's already included in `.gitignore`.
 
-5. Run app
+5. Run app in interactive mode
+
+```bash
+python app.py 
+```
+
+6. Run evaluation
 
 ```bash
 python app.py --eval
 ```
 
-6. Update the following files when iterating on the agent:
+7. Update the following files when iterating on the agent:
 
 - `agent.json` - agent configuration file with models details and list of tools
 - `prompts.yaml` - prompt templates file

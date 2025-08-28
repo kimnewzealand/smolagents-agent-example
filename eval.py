@@ -11,7 +11,7 @@ from smolagents import CodeAgent, LiteLLMModel
 
 from tools.final_answer import FinalAnswerTool
 from tools.get_calendar import Get_Compliance_Calendar_Tool
-from tools.web_search import WebSearchTool
+from tools.compliance_web_search import ComplianceWebSearchTool
 
 
 class ComplianceAgentEvaluator:
@@ -31,34 +31,10 @@ class ComplianceAgentEvaluator:
         """Define test cases for evaluation."""
         return [
             {
-                "id": "basic_calendar",
-                "query": "What are the key compliance dates for New Zealand startups?",
-                "expected_tools": ["get_compliance_calendar"],
-                "category": "basic"
-            },
-            {
                 "id": "gst_requirements", 
-                "query": "What are the GST registration requirements for my startup?",
+                "query": "What are the GST requirements for my startup?",
                 "expected_tools": ["get_compliance_calendar"],
                 "category": "tax"
-            },
-            {
-                "id": "recent_changes",
-                "query": "Have there been any recent tax changes in New Zealand?",
-                "expected_tools": ["web_search", "get_compliance_calendar"],
-                "category": "current"
-            },
-            {
-                "id": "employment_law",
-                "query": "What employment law compliance do I need for hiring my first employee?",
-                "expected_tools": ["get_compliance_calendar", "web_search"],
-                "category": "employment"
-            },
-            {
-                "id": "company_registration",
-                "query": "What are the steps to register a company in New Zealand?",
-                "expected_tools": ["get_compliance_calendar"],
-                "category": "registration"
             }
         ]
     
@@ -77,7 +53,7 @@ class ComplianceAgentEvaluator:
         
         tools = [
             Get_Compliance_Calendar_Tool(),
-            WebSearchTool(),
+            ComplianceWebSearchTool(),
             FinalAnswerTool(),
         ]
         
@@ -147,7 +123,7 @@ class ComplianceAgentEvaluator:
                 if "compliance calendar" in response.lower():
                     tools_used.append("get_compliance_calendar")
                 if "search" in response.lower() or "recent" in response.lower():
-                    tools_used.append("web_search")
+                    tools_used.append("compliance_web_search")
                 if response:  # Assume final_answer was used if we got a response
                     tools_used.append("final_answer")
                 

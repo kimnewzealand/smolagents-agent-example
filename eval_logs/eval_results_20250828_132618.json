@@ -1,0 +1,60 @@
+{
+  "evaluation_metadata": {
+    "timestamp": "2025-08-28T13:26:18.747551",
+    "model_config": {
+      "max_tokens": 2096,
+      "temperature": 0.5,
+      "last_input_token_count": null,
+      "last_output_token_count": null,
+      "model_id": "anthropic/claude-3-5-sonnet-latest",
+      "custom_role_conversions": null
+    },
+    "agent_config": {
+      "max_steps": 8,
+      "tools": [
+        "get_compliance_calendar",
+        "web_search",
+        "final_answer"
+      ],
+      "name": "NZ_Compliance_Agent"
+    }
+  },
+  "summary_metrics": {
+    "total_tests": 1,
+    "successful_tests": 1,
+    "success_rate": 1.0,
+    "average_quality_score": 3.0,
+    "average_execution_time": 16.497358560562134,
+    "max_quality_score": 5
+  },
+  "category_breakdown": {
+    "tax": {
+      "count": 1,
+      "total_quality": 3,
+      "total_time": 16.497358560562134,
+      "avg_quality": 3.0,
+      "avg_time": 16.497358560562134
+    }
+  },
+  "detailed_results": [
+    {
+      "test_id": "gst_requirements",
+      "category": "tax",
+      "query": "What are the GST requirements for my startup?",
+      "response": "\nKey GST Requirements for NZ Startups:\n\n1. Registration Requirements:\n- Mandatory registration when annual turnover exceeds or is expected to exceed $60,000\n- Voluntary registration possible if turnover is below $60,000\n\n2. Filing Frequency:\n- Six-monthly returns for businesses with turnover under $500,000\n- Key due dates: February 5 and September 5\n\n3. Important Considerations:\n- Must keep good records of all business transactions\n- Need to collect GST (currently 15%) on taxable supplies\n- Can claim GST on business purchases and expenses\n\n4. Compliance Timeline:\n- Once registered, must charge GST on all taxable supplies\n- Must issue tax invoices for supplies over $50\n- Must maintain records for 7 years\n\n5. Filing Options:\n- Can file through myIR online portal\n- Must include all GST collected and GST paid on purchases\n",
+      "response_length": 830,
+      "execution_time": 16.497358560562134,
+      "tools_used": [
+        "final_answer"
+      ],
+      "expected_tools": [
+        "get_compliance_calendar"
+      ],
+      "used_expected_tools": false,
+      "has_final_answer": true,
+      "quality_score": 3,
+      "max_quality_score": 5,
+      "timestamp": "2025-08-28T13:26:18.745188"
+    }
+  ]
+}
