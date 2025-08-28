@@ -1,6 +1,7 @@
 smolagents==1.13.0
 gradio>=4.0.0,<5.0.0
 smolagents[litellm]
+smolagents[toolkit]
 pandas
 python-dotenv
 pyyaml
@@ -8,3 +9,4 @@ requests
 beautifulsoup4
 tqdm>=4.65.0
 huggingface-hub>=0.20.0
+ddgs=0.5.4

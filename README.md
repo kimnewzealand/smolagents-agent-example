@@ -23,11 +23,15 @@ The purpose of this repo is to build a compliance agent for New Zealand startups
 
 It currently has the following features:
 
-- ✅ Web search capability via `ComplianceWebSearchTool`
-- ✅ Structured compliance calendar data via `Get_Compliance_Calendar_Tool`
-- ✅ Multi-tool orchestration with smolagents
-CodeAgents are the primary type of agent in smolagents. Instead of generating JSON or text, these agents produce Python code to perform actions.
-- ✅ Focused on NZ regulatory landscape
+- ✅ Multi-tool orchestration with [smolagents](https://huggingface.co/docs/smolagents/en/index)
+[CodeAgent](https://huggingface.co/docs/smolagents/v1.21.1/en/reference/agents#smolagents.CodeAgent)s are the primary type of agent in smolagents. Instead of generating JSON or text, these agents produce Python code to perform actions.
+
+- 2 Custom Tools
+    NZ specific web search capability via `ComplianceWebSearchTool`
+    Structured compliance calendar data via `Get_Compliance_Calendar_Tool`
+    - smolagents tool - Final answer tool via `FinalAnswerTool`
+- ✅ Evaluation script with scoring metrics
+
 
 ## Setup
 

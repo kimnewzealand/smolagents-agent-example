@@ -4,6 +4,11 @@
         "web_search", 
         "final_answer"
     ],
+    "tool_mapping": {
+        "get_compliance_calendar": "Get_Compliance_Calendar_Tool",
+        "web_search": "DuckDuckGoSearchTool",
+        "final_answer": "FinalAnswerTool"
+    },
     "model": {
         "class": "LiteLLMModel",
         "data": {
@@ -15,20 +20,8 @@
             "custom_role_conversions": null
         }
     },
-    "prompt_templates": {
-        "system_prompt": "You are an expert compliance assistant for New Zealand startups. Use the available tools to provide accurate, up-to-date compliance information. Always search for recent regulatory changes when asked about current requirements.",
-        "planning": {
-            "update_facts_pre_messages": "You are a world expert at gathering known and unknown facts based on a conversation.\nBelow you will find a task, and a history of attempts made to solve the task. You will have to produce a list of these:\n### 1. Facts given in the task\n### 2. Facts that we have learned\n### 3. Facts still to look up\n### 4. Facts still to derive\nFind the task and history below:",
-            "update_facts_post_messages": "Earlier we've built a list of facts.\nBut since in your previous steps you may have learned useful new facts or invalidated some false ones.\nPlease update your list of facts based on the previous history, and provide these headings:\n### 1. Facts given in the task\n### 2. Facts that we have learned\n### 3. Facts still to look up\n### 4. Facts still to derive\n\nNow write your new list of facts below.",
-            "update_plan_pre_messages": "You are a world expert at making efficient plans to solve any task using a set of carefully crafted tools.\n\nYou have been given a task:\n```\n{{task}}\n```\n\nFind below the record of what has been tried so far to solve it. Then you will be asked to make an updated plan to solve the task.\nIf the previous tries so far have met some success, you can make an updated plan based on these actions.\nIf you are stalled, you can make a completely new plan starting from scratch."
-        },
-        "managed_agent": {
-            "report": "Here is the final answer from your managed agent '{{name}}':\n{{final_answer}}"
-        }
-    },
     "max_steps": 8,
     "verbosity_level": 1,
-    "grammar": null,
     "planning_interval": null,
     "name": "NZ_Compliance_Agent",
     "description": "Compliance agent for New Zealand startup regulatory requirements",

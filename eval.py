@@ -6,65 +6,49 @@ import time
 from datetime import datetime
 from typing import Dict, List, Any
 
-from dotenv import load_dotenv
-from smolagents import CodeAgent, LiteLLMModel
-
-from tools.final_answer import FinalAnswerTool
-from tools.get_calendar import Get_Compliance_Calendar_Tool
-from tools.compliance_web_search import ComplianceWebSearchTool
-
 
 class ComplianceAgentEvaluator:
     """Simple evaluator for the compliance agent."""
     
-    def __init__(self, config_path: str = "agent.json"):
-        self.config = self._load_config(config_path)
+    def __init__(self, agent=None):
         self.test_cases = self._load_test_cases()
         self.results = []
-        
-    def _load_config(self, config_path: str) -> Dict[str, Any]:
-        """Load agent configuration."""
-        with open(config_path, 'r') as f:
-            return json.load(f)
+        self.agent = agent
+
     
     def _load_test_cases(self) -> List[Dict[str, Any]]:
         """Define test cases for evaluation."""
         return [
             {
                 "id": "gst_requirements", 
-                "query": "What are the GST requirements for my startup?",
+                "query": "What are the GST requirements for my startup in New Zealand?",
                 "expected_tools": ["get_compliance_calendar"],
-                "category": "tax"
+                "category": "gst",
+                "expected_output": {
+                    "contains": ["GST", "registration", "$60,000", "15%"],
+                    "mentions_threshold": True,
+                    "mentions_rate": True,
+                    "provides_deadline": True
+                }
+            },
+            {
+                "id": "upcoming_deadlines",
+                "query": "What compliance deadlines are coming up in the next 3 months?",
+                "expected_tools": ["get_compliance_calendar"],
+                "category": "deadlines",
+                "expected_output": {
+                    "contains": ["deadline", "tax", "return"],
+                    "mentions_dates": True,
+                    "provides_calendar": True,
+                    "actionable_items": True
+                }
             }
         ]
     
-    def _create_agent(self) -> CodeAgent:
-        """Create agent for evaluation."""
-        load_dotenv()
-        api_key = os.getenv("ANTHROPIC_API_KEY")
-        
-        model_data = self.config["model"]["data"]
-        model = LiteLLMModel(
-            model_id=model_data["model_id"],
-            api_key=api_key,
-            max_tokens=model_data.get("max_tokens", 2096),
-            temperature=model_data.get("temperature", 0.5),
-        )
-        
-        tools = [
-            Get_Compliance_Calendar_Tool(),
-            ComplianceWebSearchTool(),
-            FinalAnswerTool(),
-        ]
-        
-        return CodeAgent(
-            model=model,
-            tools=tools,
-            max_steps=self.config.get("max_steps", 8),
-            verbosity_level=0,  # Quiet for eval
-            name=self.config.get("name"),
-            description=self.config.get("description"),
-        )
+    def _create_agent(self):
+        """Use provided agent"""
+        if self.agent:
+            return self.agent
     
     def _evaluate_response(self, test_case: Dict, response: str, execution_time: float, tools_used: List[str]) -> Dict[str, Any]:
         """Evaluate a single response."""
@@ -110,22 +94,10 @@ class ComplianceAgentEvaluator:
             print(f"Query: {test_case['query']}")
             
             start_time = time.time()
-            tools_used = []
             
             try:
-                # Capture tools used during execution
-                original_tools = agent.tools.copy()
-                
                 response = agent.run(test_case["query"])
                 execution_time = time.time() - start_time
-                
-                # Extract tools used (simplified - would need agent instrumentation for full tracking)
-                if "compliance calendar" in response.lower():
-                    tools_used.append("get_compliance_calendar")
-                if "search" in response.lower() or "recent" in response.lower():
-                    tools_used.append("compliance_web_search")
-                if response:  # Assume final_answer was used if we got a response
-                    tools_used.append("final_answer")
                 
                 result = self._evaluate_response(test_case, response, execution_time, tools_used)
                 self.results.append(result)
@@ -141,7 +113,6 @@ class ComplianceAgentEvaluator:
                     "query": test_case["query"],
                     "response": f"ERROR: {str(e)}",
                     "execution_time": execution_time,
-                    "tools_used": [],
                     "error": str(e),
                     "quality_score": 0,
                     "max_quality_score": 5,
@@ -162,12 +133,8 @@ class ComplianceAgentEvaluator:
         summary = {
             "evaluation_metadata": {
                 "timestamp": datetime.now().isoformat(),
-                "model_config": self.config["model"]["data"],
-                "agent_config": {
-                    "max_steps": self.config.get("max_steps"),
-                    "tools": self.config.get("tools"),
-                    "name": self.config.get("name")
-                }
+                "agent_name": "NZ_Compliance_Agent",
+                "evaluation_version": "1.0"
             },
             "summary_metrics": {
                 "total_tests": total_tests,
@@ -248,3 +215,9 @@ def main():
 
 if __name__ == "__main__":
     exit(main())
+
+
+
+
+
+

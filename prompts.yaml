@@ -298,3 +298,17 @@
   "report": |-
     Here is the final answer from your managed agent '{{name}}':
     {{final_answer}}
+"final_answer": |-
+        You have reached the final step and must provide a comprehensive answer to the original task.
+
+        Use the information gathered and derived throughout the process to construct your response.
+
+        Your answer MUST contain these sections:
+        ### 1. Task outcome (short version):
+        ### 2. Task outcome (extremely detailed version):
+        ### 3. Additional context (if relevant):
+
+        Return your answer using the `final_answer` tool, passing all content as a single string argument.
+
+        Do not omit any required section, even if some information is missing—explain what is missing and why.
+        Do not include any code or tool calls in your answer; only provide the final synthesized response.

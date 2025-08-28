@@ -1,14 +1,12 @@
 """Utility functions for the Compliance Agent."""
 
+import argparse
 import json
 import os
-from typing import Dict, Any, List
+from typing import Dict, Any
 from dotenv import load_dotenv
-from smolagents import CodeAgent, LiteLLMModel
-
-from tools.final_answer import FinalAnswerTool
+from smolagents import CodeAgent, LiteLLMModel, PromptTemplates,DuckDuckGoSearchTool, FinalAnswerTool
 from tools.get_calendar import Get_Compliance_Calendar_Tool
-from tools.compliance_web_search import ComplianceWebSearchTool
 
 
 def load_environment() -> str:
@@ -18,6 +16,17 @@ def load_environment() -> str:
     if not api_key:
         raise ValueError("ANTHROPIC_API_KEY not found in environment variables")
     return api_key
+
+
+def parse_arguments():
+    """Parse command line arguments."""
+    parser = argparse.ArgumentParser(description="Compliance Agent for New Zealand startups")
+    parser.add_argument(
+        "--eval", 
+        action="store_true", 
+        help="Run evaluation mode instead of interactive session"
+    )
+    return parser.parse_args()
 
 
 def load_agent_config(filepath: str = "agent.json") -> Dict[str, Any]:
@@ -31,15 +40,16 @@ def load_agent_config(filepath: str = "agent.json") -> Dict[str, Any]:
         raise ValueError(f"Invalid JSON in agent configuration: {e}")
 
 
-def load_prompt_templates(filepath: str = "prompts.yaml") -> dict:
+def load_prompt_templates(filepath: str = "prompts.yaml") -> PromptTemplates:
     """Load prompt templates from YAML file."""
     import yaml
     try:
         with open(filepath, 'r', encoding='utf-8') as stream:
-            return yaml.safe_load(stream)
+            templates = yaml.safe_load(stream)
+            return PromptTemplates(templates if templates else {})
     except FileNotFoundError:
-        print(f"⚠️ Warning: Prompt templates file '{filepath}' not found, using defaults")
-        return {}
+        print(f"⚠️ Warning: Prompt templates file '{filepath}' not found")
+        return PromptTemplates()
 
 
 def create_model_from_config(config: Dict[str, Any], api_key: str) -> LiteLLMModel:
@@ -55,47 +65,35 @@ def create_model_from_config(config: Dict[str, Any], api_key: str) -> LiteLLMMod
     )
 
 
-def create_tools_from_config(tool_names: List[str]) -> List:
-    """Create tool instances from tool names in config."""
-    tool_mapping = {
-        "get_compliance_calendar": Get_Compliance_Calendar_Tool,
-        "compliance_web_search": ComplianceWebSearchTool,
-        "final_answer": FinalAnswerTool,
-    }
-    
-    tools = []
-    for tool_name in tool_names:
-        if tool_name in tool_mapping:
-            tools.append(tool_mapping[tool_name]())
-        else:
-            print(f"⚠️ Warning: Tool '{tool_name}' not found in mapping")
-    
-    return tools
-
-
-def create_agent_from_config(config: Dict[str, Any], model: LiteLLMModel, current_period: str = None) -> CodeAgent:
+def create_agent_from_config(config: Dict[str, Any], model: LiteLLMModel) -> CodeAgent:
     """Create agent from agent.json configuration and prompts.yaml templates."""
-    tools = create_tools_from_config(config["tools"])
+    # Instantiate actual tool objects instead of using strings
+    tool_instances = []
+    
+    for tool_name in config["tools"]:
+        if tool_name == "get_compliance_calendar":
+            tool_instances.append(Get_Compliance_Calendar_Tool())
+        elif tool_name == "compliance_web_search":
+            tool_instances.append(DuckDuckGoSearchTool())
+        elif tool_name == "final_answer":
+            tool_instances.append(FinalAnswerTool())
     
     # Load prompt templates from prompts.yaml
     prompt_templates = load_prompt_templates()
     
-    # Add current period context to agent description
-    description = config.get("description", "Compliance agent for New Zealand startups")
-    if current_period:
-        agent_description = f"{description}. Current period: {current_period}"
-    else:
-        agent_description = description
+    # Set agent description
+    agent_description = config.get("description", "Compliance agent for New Zealand startups")
     
     return CodeAgent(
         model=model,
-        tools=tools,
+        tools=tool_instances,  # Use instantiated tools
         max_steps=config.get("max_steps", 6),
         verbosity_level=config.get("verbosity_level", 1),
         prompt_templates=prompt_templates,
-        grammar=config.get("grammar"),
         planning_interval=config.get("planning_interval"),
         name=config.get("name"),
         description=agent_description,
         additional_authorized_imports=config.get("authorized_imports", []),
     )
+
+
