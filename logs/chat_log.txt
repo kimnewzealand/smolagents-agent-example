@@ -1,0 +1,2 @@
+[2025-08-28 19:07:12] USER: User Input: when is next compliance date
+[2025-08-28 19:07:24] AGENT: Agent Response: The next compliance date is 05 September 2025 for GST Returns (6-monthly)

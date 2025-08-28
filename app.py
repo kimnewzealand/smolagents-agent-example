@@ -1,6 +1,8 @@
 """Compliance Agent for New Zealand startup regulatory requirements."""
 
 import gradio as gr
+import datetime
+import os
 
 from utils import (
     load_environment, 
@@ -9,6 +11,16 @@ from utils import (
     create_model_from_config,
     create_agent_from_config,
 )
+
+
+def log_to_file(message: str, log_type: str = "INFO"):
+    """Log messages to a text file with timestamp."""
+    os.makedirs("logs", exist_ok=True)
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    log_entry = f"[{timestamp}] {log_type}: {message}\n"
+    
+    with open("logs/chat_log.txt", "a", encoding="utf-8") as f:
+        f.write(log_entry)
 
 
 def create_compliance_agent():
@@ -28,11 +40,21 @@ def create_gradio_interface(agent):
         if not user_input.strip():
             return "Please enter a question about compliance."
         
+        # Log user input
+        print(f"📝 User Input: {user_input}")
+        log_to_file(f"User Input: {user_input}", "USER")
+        
         try:
             result = agent.run(user_input)
+            # Log agent response
+            print(f"🤖 Agent Response: {result}")
+            log_to_file(f"Agent Response: {result}", "AGENT")
             return result
         except Exception as e:
-            return f"❌ Error: {str(e)}\n💡 Try a simpler question or the model may be overloaded."
+            error_msg = f"❌ Error: {str(e)}\n💡 Try a simpler question or the model may be overloaded."
+            print(f"❌ Error occurred: {str(e)}")
+            log_to_file(f"Error: {str(e)}", "ERROR")
+            return error_msg
 
     def process_input(user_input: str):
         """Process chat input."""
